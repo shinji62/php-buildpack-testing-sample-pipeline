@@ -1,10 +1,12 @@
-*Sample of unit-testing using the PHP-buildpack*
+##Sample of unit-testing using the PHP-buildpack##
 
 ***Description***
 
-This use the image build with cflinuxfs2 and the php_buildpack.
+This use the image build with cflinuxfs2 and the php_buildpack. https://github.com/shinji62/cflinuxfs2-php-buildpack-image
+
 We do the staging phase in order to have a proper environment as 
 clause as possible from the real PCF staging phase.
+
 Including supporting .bp-config.
 
  We ensure that we test with the same stack (rootfs), library and binary that a normal deployment.
