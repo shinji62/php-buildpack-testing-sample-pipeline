@@ -1,0 +1,49 @@
+---
+jobs:
+- name: unit-testing
+  public: true
+  serial: true
+  plan:
+  - get: app-source
+    resource: my-php-application
+  - task: unit-testing
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+         repository: getourneau/cflinuxfs2-php
+         tag: 4.3.14
+      inputs:
+      - name: app-source
+      run:
+        path: bash
+        args:
+          - -exc
+          - |
+            #DO NOT TOUCH
+            root=$PWD
+            export CF_STACK=cflinuxfs2
+            cp -Rr $root/app-source/. /home/vcap/app/
+            export PATH=$PATH:/home/vcap/app/php/bin
+            cd /stage && ../buildpack/bin/compile /home/vcap/app /tmp/cache
+            export HOME=/home/vcap/app
+            cd $HOME
+            source $HOME/.profile.d/bp_env_vars.sh  
+            sh $HOME/.profile.d/rewrite.sh
+            
+
+            #RUN OUR TEST
+            #htdocs is where the public file are
+            cd $HOME/htdocs
+            #Run phpunit Inside the app directory
+            phpunit
+
+resources:
+- name: my-php-application
+  type: git
+  source:
+    branch: master
+    private_key: {{private-key-github-concourse}}
+    uri: git@github.com:shinji62/slim-unit-testing-example.git
+
